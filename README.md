@@ -153,12 +153,12 @@ cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --fold
 Run Wireshark during the dry run and the real run
 
 - Start capture on your active interface
-- Optional capture filter: `host api.cloudinary.com`
+- Optional capture filter: `host api.cloudinary.com` and/or `host res.cloudinary.com`
 - Useful display filters:
 
   - `tcp.port == 443`
   - `http2`
-  - `dns and frame contains "api.cloudinary.com"`
+  - `dns and frame contains "api.cloudinary.com" || "res.cloudinary.com"`
 
 - Save your capture as `captures/<your-name>-YYYYMMDD-HHMMSS.pcapng`
 
