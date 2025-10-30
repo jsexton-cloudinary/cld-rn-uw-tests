@@ -84,7 +84,7 @@ Copy your five test images into `files/`, named by size if possible:
 - `10mb.jpg`
 - `50mb.jpg`
 
-> Tip on GitHub: a single file ≥ 50 MB triggers a warning, and ≥ 100 MB is rejected. Your 50 MB file may produce a warning. Options below under “Sharing the test images.”
+> A single file ≥ 50 MB triggers a warning, and ≥ 100 MB is rejected. The 50 MB file may produce a warning but it can be safely ignored.
 
 ### 3) Verify Node
 
