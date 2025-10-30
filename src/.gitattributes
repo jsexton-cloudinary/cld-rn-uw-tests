@@ -1,0 +1,10 @@
+# Keep line endings consistent in scripts
+*.mjs text eol=lf
+*.sh  text eol=lf
+*.cmd text eol=crlf
+
+# Treat binaries as binary
+*.png binary
+*.zip binary
+*.pcap binary
+*.pcapng binary
