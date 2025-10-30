@@ -1,0 +1,17 @@
+{
+  "name": "cld-rn-uw-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Unsigned upload batch tester for Cloudinary. CLI only.",
+  "bin": {
+    "cld-rn-uw-tests": "./src/cli.mjs"
+  },
+  "scripts": {
+    "start": "node ./src/cli.mjs --help"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "license": "MIT"
+}

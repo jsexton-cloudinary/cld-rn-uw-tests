@@ -1,0 +1,13 @@
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Local run artifacts
+out/
+out/*.ndjson
+captures/
+captures/*.pcap
+*.pcap
+*.pcapng
+.DS_Store
