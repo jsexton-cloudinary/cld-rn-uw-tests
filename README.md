@@ -127,7 +127,7 @@ cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --fold
 
 ### Parameters
 
-- `--cloud-name` Your Cloudinary cloud name, for example `jonathancloudinary`
+- `--cloud-name` Your Cloudinary cloud name, for example `CLOUD-NAME-HERE`
 - `--upload-preset` The unsigned preset to use, for example `photos_menus`
 - `--folder` Destination folder, for example `cloudinary-tests`
 - `--batches` Number of batches to run, for example `5`
