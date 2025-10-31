@@ -7,22 +7,23 @@ Designed to:
 - Upload the same local files in parallel within each batch
 - Run multiple batches with a fixed delay between batches
 - Always pass the `folder` parameter
-- Produce structured logs for analysis and run Wireshark alongside for network capture
+- Produce structured logs for analysis
+- Pair with Wireshark/network capture for later analysis
 
 ## Why no SDK?
 
-This tool targets **unsigned** uploads using a preconfigured upload prese. For that flow, the Cloudinary Node SDK is **not required**. Using the SDK would introduce account credentials and is more appropriate for **signed** server-side uploads. If we later decide to switch to signed uploads, we can adopt the SDK then.
+This tool sends **unsigned** uploads directly to the HTTP API using your **cloud name** in the URL. No signature and no account credentials are required for the script to run. Note: Cloudinary’s **CLI** requires `CLOUDINARY_URL` even for unsigned uploads, but this project does **not** use the CLI or the Node SDK in it's current iteration.
 
 ## Requirements
 
 - Node.js 24.11.0 or newer
 - macOS Sequoia 15.6.1 or Windows 10/11
 - Five local test images in `files/`
-- Your unsigned upload preset enabled in Cloudinary
+- An **unsigned** upload preset configured in your Cloudinary environment
 
 ## Dependencies
 
-- Runtime: none beyond Node’s built-in `fetch`, `FormData`, and `Blob`
+- Runtime: none beyond Node’s built-in `fetch`, `FormData`, `performance` and `Blob`
 - Dev tooling: optional (not required)
 - Network capture: Wireshark (recommended, cross platform - Mac, Windows, Linux)
 
@@ -104,7 +105,7 @@ From the repo root:
 
 ### Dry run
 
-Validates file discovery, batching, and logging without making network calls.
+Validates file discovery, batching, prints image sizes and logging without making network calls.
 
 ```
 node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-folder cloudinary-tests --batches 5 --delay-ms 10000 --dry
@@ -115,7 +116,7 @@ node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --ass
 Uploads the five files in parallel per batch, for fifty batches, with a ten second pause between batches.
 
 ```
-node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-older cloudinary-tests --batches 50 --delay-ms 10000
+node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-folder cloudinary-tests --batches 50 --delay-ms 10000
 ```
 
 ### Optional: install as a CLI
@@ -150,7 +151,7 @@ cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asse
 
 ## Wireshark quick start
 
-Run Wireshark during the dry run and the real run
+Run Wireshark only during the real run
 
 - Start capture on your active interface
 - Optional capture filter: `host api.cloudinary.com` and/or `host res.cloudinary.com`
@@ -182,7 +183,7 @@ Run Wireshark during the dry run and the real run
 
 - **One batch succeeds, others fail intermittently**
 
-  - Check local network, VPN/WARP state, or any corporate proxy limits
+  - Check local network, VPN state, or any corporate proxy limits
 
 - **Large file issues**
 
