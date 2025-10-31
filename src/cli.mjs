@@ -28,21 +28,18 @@ function parseArgs(argv) {
 function usage() {
     console.log(`
 Usage:
-  node src/cli.mjs --cloud-name <name> --upload-preset <preset> --folder <folder>
+  node src/cli.mjs --cloud-name <name> --upload-preset <preset> --asset-folder <asset-folder>
   [--batches 5] [--delay-ms 10000] [--dry]
-  [--pe <environment name or id>] [--pe-id <environment id>]
 
 Required:
-  --cloud-name       Your Cloudinary cloud name. Example: jonathancloudinary
+  --cloud-name       Your Cloudinary cloud name. Example: rn-cld-tests
   --upload-preset    Unsigned upload preset name. Example: photos_menus
-  --folder           Target folder for all uploads. Example: cloudinary-tests
+  --asset-folder           Target asset-folder for all uploads. Example: cloudinary-tests
 
 Optional:
   --batches          Number of batches to run. Default 5
   --delay-ms         Delay between batches in milliseconds. Default 10000
   --dry              Plan only. No uploads. Still logs the plan.
-  --pe               Product environment name or id. Example: rn-cld-tests
-  --pe-id            Product environment id when your org requires the id
   `);
 }
 
@@ -99,12 +96,10 @@ function humanBytes(n) {
 async function uploadUnsigned({
     cloudName,
     uploadPreset,
-    folder,
+    assetFolder,
     filePath,
     publicId,
     signal,
-    productEnv,
-    productEnvId,
     resourceType = 'image'
 }) {
     // Use explicit image upload endpoint to match your preset type
@@ -115,14 +110,11 @@ async function uploadUnsigned({
     const blob = new Blob([bytes]);
     fd.append('file', blob, path.basename(filePath));
     fd.append('upload_preset', uploadPreset);
-    fd.append('folder', folder);
+    fd.append('asset_folder', assetFolder);
     fd.append('public_id', publicId);
 
     // Only attach headers that are provided
     const headers = {};
-    if (productEnv) headers['X-Product-Environment'] = productEnv;
-    if (productEnvId) headers['X-Product-Environment-Id'] = productEnvId;
-
     const t0 = performance.now();
     const resp = await fetch(url, { method: 'POST', headers, body: fd, signal });
     const t1 = performance.now();
@@ -157,15 +149,13 @@ async function main() {
 
     const cloudName = args['cloud-name'];
     const uploadPreset = args['upload-preset'];
-    const folder = args['folder'];
+    const assetFolder = args['asset-folder'];
     const batches = Number(args['batches'] ?? 5);
     const delayMs = Number(args['delay-ms'] ?? 10000);
     const dry = Boolean(args['dry']);
-    const productEnv = args['pe'] ?? args['product-env'];
-    const productEnvId = args['pe-id'] ?? args['product-env-id'];
 
 
-    if (!cloudName || !uploadPreset || !folder) {
+    if (!cloudName || !uploadPreset || !assetFolder) {
         console.error('Missing required args.');
         usage();
         process.exit(1);
@@ -179,14 +169,13 @@ async function main() {
     console.log(`Run ${runId}`);
     console.log(`Cloud: ${cloudName}`);
     console.log(`Preset: ${uploadPreset}`);
-    console.log(`Folder: ${folder}`);
-    console.log(`Product env: ${productEnv ?? 'not supplied'} Product env id: ${productEnvId ?? 'N/A'}`);
+    console.log(`Asset Folder: ${assetFolder}`);
     console.log(`Batches: ${batches}  Delay: ${delayMs} ms  Dry: ${dry}`);
     console.log(`Files:`);
     files.forEach(f => console.log(`  ${f.name}  ${humanBytes(f.size)}`));
     console.log(`Log: ${logPath}`);
 
-    await writeLogLine(logPath, { ts: new Date().toISOString(), runId, event: 'start', cloudName, uploadPreset, folder, batches, delayMs, dry });
+    await writeLogLine(logPath, { ts: new Date().toISOString(), runId, event: 'start', cloudName, uploadPreset, assetFolder, batches, delayMs, dry });
 
     for (let b = 0; b < batches; b++) {
         const batchNo = b + 1;
@@ -207,13 +196,13 @@ async function main() {
                 const publicId = `${baseNameNoExt(f.name)}-b${String(batchNo).padStart(2, '0')}-${runId}`;
                 let result;
                 try {
-                    result = await uploadUnsigned({ cloudName, uploadPreset, folder, filePath: f.path, publicId, productEnv, productEnvId });
+                    result = await uploadUnsigned({ cloudName, uploadPreset, assetFolder, filePath: f.path, publicId});
                     await writeLogLine(logPath, {
                         ts: new Date().toISOString(),
                         runId, batch: batchNo, file: f.name, path: f.path, size: f.size,
                         publicId, status: result.ok ? 'ok' : 'error',
                         httpStatus: result.status, durationMs: result.durationMs,
-                        cld: result.data, productEnv, productEnvId
+                        cld: result.data
                     });
                     return { file: f.name, ok: result.ok };
                 } catch (err) {
