@@ -74,9 +74,9 @@ git clone <your-repo-url> cld-rn-uw-tests
 cd cld-rn-uw-tests
 ```
 
-### 2) Place your files
+### 2) File Placement
 
-Copy your five test images into `files/`, named by size if possible:
+Five test images are already in `files/`, named by size:
 
 - `500kb.jpg`
 - `1mb.jpg`
@@ -107,29 +107,29 @@ From the repo root:
 Validates file discovery, batching, and logging without making network calls.
 
 ```
-node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --folder cloudinary-tests --batches 5 --delay-ms 10000 --dry
+node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-folder cloudinary-tests --batches 5 --delay-ms 10000 --dry
 ```
 
 ### Real run
 
-Uploads the five files in parallel per batch, for five batches, with a ten second pause between batches.
+Uploads the five files in parallel per batch, for fifty batches, with a ten second pause between batches.
 
 ```
-node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --folder cloudinary-tests --batches 5 --delay-ms 10000
+node src/cli.mjs --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-older cloudinary-tests --batches 50 --delay-ms 10000
 ```
 
 ### Optional: install as a CLI
 
 ```
 npm link
-cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --folder cloudinary-tests --batches 5 --delay-ms 10000
+cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --asset-folder cloudinary-tests --batches 50 --delay-ms 10000
 ```
 
 ### Parameters
 
 - `--cloud-name` Your Cloudinary cloud name, for example `CLOUD-NAME-HERE`
 - `--upload-preset` The unsigned preset to use, for example `photos_menus`
-- `--folder` Destination folder, for example `cloudinary-tests`
+- `--asset-folder` Destination folder, for example `cloudinary-tests`
 - `--batches` Number of batches to run, for example `5`
 - `--delay-ms` Milliseconds to wait between batches, for example `10000`
 - `--dry` If present, performs a dry run without HTTP requests
@@ -138,7 +138,7 @@ cld-rn-uw-tests --cloud-name CLOUD-NAME-HERE --upload-preset photos_menus --fold
 
 - Reads all files in `files/` and uses that set for every batch
 - Starts each batch and uploads all files **in parallel**
-- Always passes `folder=<your-folder>`
+- Always passes `asset-folder=<your-folder>`
 - Writes one line per attempted upload to `out/run-YYYYMMDD-HHMMSS.ndjson` with:
 
   - file name
@@ -204,5 +204,5 @@ If you switch to **signed** uploads (server-side), the SDK becomes useful.
   export CLOUDINARY_URL=cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
   ```
 
-- Then use `v2.uploader.upload()` with `{ folder: 'cloudinary-tests', tags: ['v2','photos_menus'] }`.
+- Then use `v2.uploader.upload()` with `{ asset-folder: 'cloudinary-tests', tags: ['v2','photos_menus'] }`.
   This changes auth, logging, and error semantics, so keep it as a separate branch or PR.
