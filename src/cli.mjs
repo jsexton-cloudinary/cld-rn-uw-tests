@@ -4,6 +4,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Node 20+ has global fetch, FormData, Blob, performance
+const required = '24.11.0';
+const [majReq, minReq] = required.split('.').map(Number);
+const [maj, min] = process.versions.node.split('.').map(Number);
+if (maj < majReq || (maj === majReq && min < minReq)) {
+  console.error(`Node ${required}+ required. You are on ${process.versions.node}. Run "nvm use" or "nvm install".`);
+  process.exit(1);
+}
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
