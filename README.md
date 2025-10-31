@@ -20,6 +20,7 @@ This tool sends **unsigned** uploads directly to the HTTP API using your **cloud
 - macOS Sequoia 15.6.1 or Windows 10/11
 - Five local test images in `files/`
 - An **unsigned** upload preset configured in your Cloudinary environment
+- Dynamic folders enabled if you expect `asset_folder` behavior
 
 ## Dependencies
 
@@ -93,7 +94,7 @@ Five test images are already in `files/`, named by size:
 node -v
 ```
 
-You should see `v24.11.0` or newer.
+You should see `v24.11.0` or newer. This repo includes an `.nvmrc` with: `24.11.0`. If you use nvm run: `nvm use` or, if not installed locally: `nvm install`. There’s also a small version guard at the top of `src/cli.mjs` that exits early with a helpful message if your Node version is too old.
 
 ### 4) No install step needed
 
