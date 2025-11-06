@@ -24,7 +24,8 @@ This tool sends **unsigned** uploads directly to the HTTP API using your **cloud
 
 ## Dependencies
 
-- Runtime: none beyond Node’s built-in `fetch`, `FormData`, `performance` and `Blob`
+- Runtime: `undici` (for `fetch`, `FormData`, and connection pooling via `Agent`)
+- Also uses Node’s built-in `performance`
 - Dev tooling: optional (not required)
 - Network capture: Wireshark (recommended, cross platform - Mac, Windows, Linux)
 
@@ -96,9 +97,11 @@ node -v
 
 You should see `v24.11.0` or newer. This repo includes an `.nvmrc` with: `24.11.0`. If you use nvm run: `nvm use` or, if not installed locally: `nvm install`. There’s also a small version guard at the top of `src/cli.mjs` that exits early with a helpful message if your Node version is too old.
 
-### 4) No install step needed
+### 4) Install dependencies
 
-There is no `npm install` for this project. All networking is done with Node’s native APIs.
+```
+npm install
+```
 
 ## Usage
 
